@@ -1,5 +1,6 @@
 package io.pacheco.orders.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
@@ -14,18 +15,28 @@ public class Product {
     private String name;
     private String description;
     private double price;
+    private String image;
 
     @ManyToMany
+    @JsonIgnore
     Set<Order> orders;
 
     public Product() {
     }
 
-    public Product(Integer id, String name, String description, double price) {
+    public Product(String name, String description, double price, String image) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.image = image;
+    }
+
+    public Product(Integer id, String name, String description, double price, String image) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.image = image;
     }
 
     public Integer getId() {
@@ -58,5 +69,21 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
     }
 }

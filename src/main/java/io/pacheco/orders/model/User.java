@@ -14,6 +14,8 @@ public class User {
 
     private String email;
 
+    private String role;
+
     @ManyToMany
     Set<Order> orders;
 
@@ -41,4 +43,11 @@ public class User {
         this.email = email;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

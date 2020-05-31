@@ -1,5 +1,8 @@
 package io.pacheco.orders.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
@@ -19,12 +22,9 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     List<Product> products;
 
-    @ManyToMany
-    @JoinTable(
-            name = "order_user",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    List<User> users;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "client_id", nullable = false)
+    private User client;
 
     public Integer getId() {
         return id;
@@ -42,11 +42,11 @@ public class Order {
         this.products = products;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public User getClient() {
+        return client;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setClient(User client) {
+        this.client = client;
     }
 }

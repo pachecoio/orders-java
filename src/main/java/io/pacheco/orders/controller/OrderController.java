@@ -41,8 +41,13 @@ public class OrderController {
     @ResponseBody
     public ResponseEntity delete(@PathVariable("id") Integer id) {
         if (!repository.findById(id).isPresent()) return ResponseEntity.status(404).body(null);
-        repository.deleteById(id);
-        return ResponseEntity.status(202).body("Order deleted successfully");
+        try {
+            repository.deleteById(id);
+            return ResponseEntity.status(202).body("Order deleted successfully");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
     }
 
 }
