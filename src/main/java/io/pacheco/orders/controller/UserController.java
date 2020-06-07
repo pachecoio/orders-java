@@ -17,7 +17,8 @@ public class UserController {
 
     @GetMapping()
     public @ResponseBody
-    Iterable<User> getAll() {
+    Iterable<User> getAll(@RequestParam(value = "role", required = false) String role) {
+        if(role != null) return userRepository.findByRole(role);
         return userRepository.findAll();
     }
 
@@ -44,7 +45,7 @@ public class UserController {
     public ResponseEntity delete(@PathVariable("id") Integer id) {
         if (!userRepository.findById(id).isPresent()) return ResponseEntity.status(404).body(null);
         userRepository.deleteById(id);
-        return ResponseEntity.status(202).body("User delete successfully");
+        return ResponseEntity.status(202).body(null);
     }
 
 }

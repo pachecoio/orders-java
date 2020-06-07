@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping(path="/api/product")
 public class ProductController {
@@ -51,23 +53,26 @@ public class ProductController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json", consumes = "multipart/form-data")
     @ResponseBody
     public ResponseEntity update(@PathVariable("id") Integer id,
-                                 @RequestParam("name") String name,
-                                 @RequestParam("description") String description,
-                                 @RequestParam("price") double price,
-                                 @RequestParam("image") MultipartFile image) {
-        if (!repository.findById(id).isPresent()) return ResponseEntity.status(404).body(null);
+                                 @RequestParam(value = "name", required = false) String name,
+                                 @RequestParam(value = "description", required = false) String description,
+                                 @RequestParam(value = "price") double price,
+                                 @RequestParam(value = "image", required = false) MultipartFile image) {
 
-        String imageUrl = fileService.storeFile(image);
+        Optional<Product> currentProduct = repository.findById(id);
+        if (!currentProduct.isPresent()) return ResponseEntity.status(404).body(null);
 
-        Product item = repository.save(
-                new Product(
-                        id,
-                        name,
-                        description,
-                        price,
-                        imageUrl
-                )
-        );
+        Product product = currentProduct.get();
+
+        if(image != null) {
+            String imageUrl = fileService.storeFile(image);
+            product.setImage(imageUrl);
+        }
+
+        product.setName(name);
+        product.setDescription(description);
+        product.setPrice(price);
+
+        Product item = repository.save(product);
 
         return ResponseEntity.status(200).body(item);
     }
